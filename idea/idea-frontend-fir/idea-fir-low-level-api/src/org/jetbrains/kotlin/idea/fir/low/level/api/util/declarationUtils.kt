@@ -137,7 +137,7 @@ private fun KtTypeAlias.findFir(firSymbolProvider: FirSymbolProvider): FirTypeAl
 val FirDeclaration.isGeneratedDeclaration
     get() = realPsi == null
 
-internal fun FirCallableDeclaration<*>.collectDesignation(): List<FirClassLikeDeclaration<*>> {
+fun FirCallableDeclaration<*>.collectDesignation(): List<FirClassLikeDeclaration<*>> {
     return containingClass()
         ?.toFirRegularClass(session)
         ?.collectDesignation()
