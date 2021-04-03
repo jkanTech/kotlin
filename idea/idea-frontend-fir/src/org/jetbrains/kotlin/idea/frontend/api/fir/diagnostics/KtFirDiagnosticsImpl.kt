@@ -1085,6 +1085,15 @@ internal class ConflictingUpperBoundsImpl(
     override val firDiagnostic: FirPsiDiagnostic<*> by weakRef(firDiagnostic)
 }
 
+internal class ReturnTypeMismatchImpl(
+    override val expected: KtType,
+    override val actual: KtType,
+    firDiagnostic: FirPsiDiagnostic<*>,
+    override val token: ValidityToken,
+) : KtFirDiagnostic.ReturnTypeMismatch(), KtAbstractFirDiagnostic<KtReturnExpression> {
+    override val firDiagnostic: FirPsiDiagnostic<*> by weakRef(firDiagnostic)
+}
+
 internal class ExtensionInClassReferenceNotAllowedImpl(
     override val referencedDeclaration: KtCallableSymbol,
     firDiagnostic: FirPsiDiagnostic<*>,

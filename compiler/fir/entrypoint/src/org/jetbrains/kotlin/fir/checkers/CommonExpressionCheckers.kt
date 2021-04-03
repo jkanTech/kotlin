@@ -46,6 +46,7 @@ object CommonExpressionCheckers : ExpressionCheckers() {
     )
 
     override val returnExpressionCheckers: Set<FirReturnExpressionChecker> = setOf(
-        FirReturnAllowedChecker
+        FirReturnAllowedChecker,
+        FirFunctionReturnTypeMismatchChecker
     )
 }

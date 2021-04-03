@@ -309,6 +309,11 @@ object DIAGNOSTICS_LIST : DiagnosticList() {
         val CONFLICTING_UPPER_BOUNDS by error<FirSourceElement, KtNamedDeclaration> {
             parameter<FirTypeParameterSymbol>("typeParameter")
         }
+
+        val RETURN_TYPE_MISMATCH by error<FirSourceElement, KtReturnExpression>(PositioningStrategy.WHOLE_ELEMENT) {
+            parameter<ConeKotlinType>("expected")
+            parameter<ConeKotlinType>("actual")
+        }
     }
 
     val REFLECTION by object : DiagnosticGroup("Reflection") {

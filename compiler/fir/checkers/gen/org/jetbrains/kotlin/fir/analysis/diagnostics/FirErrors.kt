@@ -226,6 +226,7 @@ object FirErrors {
     val ONLY_ONE_CLASS_BOUND_ALLOWED by error0<FirSourceElement, KtTypeReference>()
     val REPEATED_BOUND by error0<FirSourceElement, KtTypeReference>()
     val CONFLICTING_UPPER_BOUNDS by error1<FirSourceElement, KtNamedDeclaration, FirTypeParameterSymbol>()
+    val RETURN_TYPE_MISMATCH by error2<FirSourceElement, KtReturnExpression, ConeKotlinType, ConeKotlinType>(SourceElementPositioningStrategies.WHOLE_ELEMENT)
 
     // Reflection
     val EXTENSION_IN_CLASS_REFERENCE_NOT_ALLOWED by error1<FirSourceElement, KtExpression, FirCallableDeclaration<*>>(SourceElementPositioningStrategies.REFERENCE_BY_QUALIFIED)
