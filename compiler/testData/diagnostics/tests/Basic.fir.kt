@@ -6,11 +6,6 @@ fun test() : Int {
     val a : () -> Unit = {
         <!INAPPLICABLE_CANDIDATE!>foo<!>(1)
     }
-
-    val b : (Int) -> Unit = { i ->
-        i
-    }
-
     return 1 <!NONE_APPLICABLE!>-<!> "1"
 }
 
