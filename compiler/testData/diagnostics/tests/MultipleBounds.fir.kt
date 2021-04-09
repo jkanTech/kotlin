@@ -11,7 +11,7 @@ interface B {
 interface G<X> {
     val <X> boo: Double  where X : A, X : B
     val <A> bal: Double  where A : B
-    val <Y> bas: Double where Y : B, X : B
+    val <Y> bas: Double where Y : B, <!NAME_IN_CONSTRAINT_IS_NOT_A_TYPE_PARAMETER!>X<!> : B
 }
 
 class C() : A(), B
@@ -24,7 +24,7 @@ class Test1<T>()
   where
     T : A,
     T : B,
-    B : T // error
+    <!NAME_IN_CONSTRAINT_IS_NOT_A_TYPE_PARAMETER!>B<!> : T // error
   {
 
   fun test(t : T) {
@@ -54,7 +54,7 @@ fun <T> test2(t : T)
   where
     T : A,
     T : B,
-    B : T
+    <!NAME_IN_CONSTRAINT_IS_NOT_A_TYPE_PARAMETER!>B<!> : T
 {
   <!TYPE_PARAMETER_ON_LHS_OF_DOT!>T<!>.<!UNRESOLVED_REFERENCE!>foo<!>()
   <!TYPE_PARAMETER_ON_LHS_OF_DOT!>T<!>.<!UNRESOLVED_REFERENCE!>bar<!>()
