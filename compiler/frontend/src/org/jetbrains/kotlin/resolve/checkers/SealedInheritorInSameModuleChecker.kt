@@ -6,18 +6,22 @@
 package org.jetbrains.kotlin.resolve.checkers
 
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
+import org.jetbrains.kotlin.descriptors.ClassifierDescriptor
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
-import org.jetbrains.kotlin.descriptors.impl.ModuleDescriptorImpl
 import org.jetbrains.kotlin.descriptors.isSealed
 import org.jetbrains.kotlin.diagnostics.Errors
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtDeclaration
+import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.resolve.bindingContextUtil.getAbbreviatedTypeOrType
 import org.jetbrains.kotlin.resolve.descriptorUtil.module
+import org.jetbrains.kotlin.resolve.multiplatform.commonSourceSetName
+import org.jetbrains.kotlin.resolve.source.PsiSourceFile
 
 object SealedInheritorInSameModuleChecker : DeclarationChecker {
     override fun check(declaration: KtDeclaration, descriptor: DeclarationDescriptor, context: DeclarationCheckerContext) {
         if (descriptor !is ClassDescriptor || declaration !is KtClassOrObject) return
+        val descriptorSourceSet = descriptor.sourceSet
         val currentModule = descriptor.module
         for (superTypeListEntry in declaration.superTypeListEntries) {
             val typeReference = superTypeListEntry.typeReference ?: continue
@@ -29,11 +33,15 @@ object SealedInheritorInSameModuleChecker : DeclarationChecker {
                  *   counterpart for this class will be declared. So if super class is resolved to expect sealed
                  *   class then its allowed to declare inheritor
                  */
-                val inheritorAllowed = superClass.isExpect || superClass.module == currentModule
+                val inheritorAllowed =
+                    superClass.isExpect || (superClass.module == currentModule && descriptorSourceSet == superClass.sourceSet)
                 if (!inheritorAllowed) {
                     context.trace.report(Errors.SEALED_INHERITOR_IN_DIFFERENT_MODULE.on(typeReference))
                 }
             }
         }
     }
+
+    private val ClassifierDescriptor.sourceSet: String?
+        get() = ((this.source.containingFile as? PsiSourceFile)?.psiFile as? KtFile)?.commonSourceSetName
 }
