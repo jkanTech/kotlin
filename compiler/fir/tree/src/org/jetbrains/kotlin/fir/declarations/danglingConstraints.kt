@@ -8,6 +8,9 @@ package org.jetbrains.kotlin.fir.declarations
 import org.jetbrains.kotlin.fir.FirSourceElement
 import org.jetbrains.kotlin.name.Name
 
+/**
+ * Constraint without corresponding type argiment
+ */
 data class DanglingTypeConstraint(val name: Name, val source: FirSourceElement)
 
 private object DanglingTypeConstraintsKey : FirDeclarationDataKey()
