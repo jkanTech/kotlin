@@ -147,7 +147,6 @@ class JpsKotlinCompilerRunner {
         compilerSettings: CompilerSettings,
         environment: JpsCompilerEnvironment,
         allSourceFiles: Collection<File>,
-        commonSources: Collection<File>,
         sourceMapRoots: Collection<File>,
         libraries: List<String>,
         friendModules: List<String>,
@@ -159,7 +158,7 @@ class JpsKotlinCompilerRunner {
         val arguments = mergeBeans(commonArguments, XmlSerializerUtil.createCopy(k2jsArguments))
         log.debug("K2JS: merged arguments: " + ArgumentUtils.convertArgumentsToStringList(arguments))
 
-        setupK2JsArguments(outputFile, allSourceFiles, commonSources, libraries, friendModules, arguments)
+        setupK2JsArguments(outputFile, allSourceFiles, libraries, friendModules, arguments)
         if (arguments.sourceMap) {
             arguments.sourceMapBaseDirs = sourceMapRoots.joinToString(File.pathSeparator) { it.path }
         }
@@ -321,7 +320,6 @@ class JpsKotlinCompilerRunner {
     private fun setupK2JsArguments(
         _outputFile: File,
         allSourceFiles: Collection<File>,
-        _commonSources: Collection<File>,
         _libraries: List<String>,
         _friendModules: List<String>,
         settings: K2JSCompilerArguments
@@ -329,7 +327,6 @@ class JpsKotlinCompilerRunner {
         with(settings) {
             noStdlib = true
             freeArgs = allSourceFiles.map { it.path }.toMutableList()
-            commonSources = _commonSources.map { it.path }.toTypedArray()
             outputFile = _outputFile.path
             metaInfo = true
             libraries = _libraries.joinToString(File.pathSeparator)

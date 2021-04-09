@@ -185,16 +185,15 @@ class K2JVMCompiler : CLICompiler<K2JVMCompilerArguments>() {
             addJavaSourceRoot(JavaRootPath(it, args.javaPackagePrefix))
         }
 
-        val commonSources = args.commonSources?.toSet().orEmpty()
+        val commonSourcesMap = createSourceSetMappingFromArg(args.commonSourceSets)
         for (arg in args.freeArgs) {
             if (arg.endsWith(JavaFileType.DOT_DEFAULT_EXTENSION)) {
                 addJavaSourceRoot(JavaRootPath(arg, args.javaPackagePrefix))
             } else {
                 addSourceFiles(arg)
-                if (arg in commonSources) {
-                    addCommonSourceFiles(arg)
+                commonSourcesMap[arg]?.let {
+                    addCommonSourceFilesWithName(it, arg)
                 }
-
                 if (File(arg).isDirectory) {
                     addJavaSourceRoot(JavaRootPath(arg, args.javaPackagePrefix))
                 }

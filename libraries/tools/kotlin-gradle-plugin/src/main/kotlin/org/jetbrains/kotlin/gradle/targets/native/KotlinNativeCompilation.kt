@@ -64,7 +64,9 @@ abstract class AbstractKotlinNativeCompilation(
     override fun addSourcesToCompileTask(sourceSet: KotlinSourceSet, addAsCommonSources: Lazy<Boolean>) =
         compileKotlinTaskProvider.configure { task ->
             task.source(sourceSet.kotlin)
-            task.commonSources.from(target.project.files(Callable { if (addAsCommonSources.value) sourceSet.kotlin else emptyList<Any>() }))
+            if (addAsCommonSources.value) {
+                sourceSet.kotlin.files.mapTo(task.commonSourceSets.getOrPut(sourceSet.name, ::mutableListOf)) { it.path }
+            }
         }
 
     // Endorsed library controller.

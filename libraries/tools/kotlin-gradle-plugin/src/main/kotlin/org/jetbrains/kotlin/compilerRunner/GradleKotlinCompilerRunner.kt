@@ -27,7 +27,6 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.ownModuleName
 import org.jetbrains.kotlin.gradle.plugin.statistics.KotlinBuildStatsService
 import org.jetbrains.kotlin.gradle.tasks.GradleCompileTaskProvider
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompileTaskData
-import org.jetbrains.kotlin.gradle.tasks.locateTask
 import org.jetbrains.kotlin.gradle.utils.archivePathCompatible
 import org.jetbrains.kotlin.gradle.utils.newTmpFile
 import org.jetbrains.kotlin.gradle.utils.relativeOrCanonical
@@ -74,14 +73,14 @@ internal open class GradleCompilerRunner(protected val taskProvider: GradleCompi
      */
     fun runJvmCompilerAsync(
         sourcesToCompile: List<File>,
-        commonSources: List<File>,
+        commonSourcesMap: Map<String, List<String>>,
         javaSourceRoots: Iterable<File>,
         javaPackagePrefix: String?,
         args: K2JVMCompilerArguments,
         environment: GradleCompilerEnvironment
     ) {
         args.freeArgs += sourcesToCompile.map { it.absolutePath }
-        args.commonSources = commonSources.map { it.absolutePath }.toTypedArray()
+        args.commonSourceSets = toCommonSourceSetsArg(commonSourcesMap)
         args.javaSourceRoots = javaSourceRoots.map { it.absolutePath }.toTypedArray()
         args.javaPackagePrefix = javaPackagePrefix
         runCompilerAsync(KotlinCompilerClass.JVM, args, environment)
@@ -93,12 +92,12 @@ internal open class GradleCompilerRunner(protected val taskProvider: GradleCompi
      */
     fun runJsCompilerAsync(
         kotlinSources: List<File>,
-        kotlinCommonSources: List<File>,
+        kotlinCommonSourcesMap: Map<String, List<String>>,
         args: K2JSCompilerArguments,
         environment: GradleCompilerEnvironment
     ) {
         args.freeArgs += kotlinSources.map { it.absolutePath }
-        args.commonSources = kotlinCommonSources.map { it.absolutePath }.toTypedArray()
+        args.commonSourceSets = toCommonSourceSetsArg(kotlinCommonSourcesMap)
         runCompilerAsync(KotlinCompilerClass.JS, args, environment)
     }
 
@@ -325,6 +324,16 @@ internal open class GradleCompilerRunner(protected val taskProvider: GradleCompi
 
         internal fun sessionsDir(project: Project): File =
             File(File(project.rootProject.buildDir, "kotlin"), "sessions")
+
+        internal fun toCommonSourceSetsArg(map: Map<String, List<String>>): Array<String> {
+            return map.flatMap { (name, files) ->
+                if (files.isEmpty()) return@flatMap emptyList<String>()
+                val result = mutableListOf<String>()
+                result += "&&$name"
+                files.mapTo(result) { File(it).absolutePath }
+                result
+            }.toTypedArray()
+        }
     }
 }
 

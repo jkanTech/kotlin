@@ -20,10 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.analyzer.AnalysisResult;
 import org.jetbrains.kotlin.backend.common.output.OutputFileCollection;
-import org.jetbrains.kotlin.cli.common.CLICompiler;
-import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys;
-import org.jetbrains.kotlin.cli.common.CommonCompilerPerformanceManager;
-import org.jetbrains.kotlin.cli.common.ExitCode;
+import org.jetbrains.kotlin.cli.common.*;
 import org.jetbrains.kotlin.cli.common.arguments.K2JSCompilerArguments;
 import org.jetbrains.kotlin.cli.common.arguments.K2JSCompilerArgumentsKt;
 import org.jetbrains.kotlin.cli.common.arguments.K2JsArgumentConstants;
@@ -198,10 +195,10 @@ public class K2JSCompiler extends CLICompiler<K2JSCompilerArguments> {
 
         configuration.put(JSConfigurationKeys.LIBRARIES, configureLibraries(arguments, paths, messageCollector));
 
-        String[] commonSourcesArray = arguments.getCommonSources();
-        Set<String> commonSources = commonSourcesArray == null ? Collections.emptySet() : SetsKt.setOf(commonSourcesArray);
+        Map<String, String> sourceToSourceSet = UtilsKt.createSourceSetMappingFromArg(arguments.getCommonSourceSets());
+
         for (String arg : arguments.getFreeArgs()) {
-            ContentRootsKt.addKotlinSourceRoot(configuration, arg, commonSources.contains(arg));
+            ContentRootsKt.addKotlinSourceRoot(configuration, arg, sourceToSourceSet.get(arg));
         }
 
         KotlinCoreEnvironment environmentForJS =

@@ -58,6 +58,7 @@ import org.jetbrains.kotlin.psi2ir.Psi2IrTranslator
 import org.jetbrains.kotlin.psi2ir.generators.TypeTranslatorImpl
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.CompilerEnvironment
+import org.jetbrains.kotlin.resolve.multiplatform.commonSourceSetName
 import org.jetbrains.kotlin.resolve.multiplatform.isCommonSource
 import org.jetbrains.kotlin.serialization.js.ModuleKind
 import org.junit.After
@@ -115,7 +116,11 @@ class GenerateIrRuntime {
 
         val psiFile = psiManager.findFile(file)
 
-        return (psiFile as? KtFile)?.apply { isCommonSource = isCommon }
+        return (psiFile as? KtFile)?.apply {
+            if (isCommon) {
+                commonSourceSetName = "common"
+            }
+        }
     }
 
     private fun File.listAllFiles(): List<File> {
@@ -284,6 +289,7 @@ class GenerateIrRuntime {
         }
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     @Test
     fun runIncrementalKlibGeneration() {
 
@@ -291,6 +297,17 @@ class GenerateIrRuntime {
 
         val filesToCompile = fullRuntimeSourceSet
 //        val filesToCompile = reducedRuntimeSourceSet
+
+        val commonSourceSets = filesToCompile.filter { it.isCommonSource }.groupBy(
+            keySelector = { it.commonSourceSetName!! },
+            valueTransform = { it.virtualFile.path }
+        ).flatMap { (name, paths) ->
+            buildList {
+                add(name)
+                addAll(paths)
+            }
+        }.toTypedArray()
+
 
         val args = K2JSCompilerArguments().apply {
             libraries = ""
@@ -304,7 +321,7 @@ class GenerateIrRuntime {
             allowResultReturnType = true
             multiPlatform = true
             languageVersion = "1.4"
-            commonSources = filesToCompile.filter { it.isCommonSource == true }.map { it.virtualFilePath }.toTypedArray()
+            this.commonSourceSets = commonSourceSets
         }
 
         val cachesDir = workingDir.resolve("caches")

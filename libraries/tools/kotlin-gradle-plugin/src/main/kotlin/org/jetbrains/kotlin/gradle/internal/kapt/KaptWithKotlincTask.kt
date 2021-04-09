@@ -110,7 +110,7 @@ abstract class KaptWithKotlincTask @Inject constructor(
         val compilerRunner = GradleCompilerRunner(taskProvider)
         compilerRunner.runJvmCompilerAsync(
             sourcesToCompile = emptyList(),
-            commonSources = emptyList(),
+            commonSourcesMap = emptyMap(),
             javaSourceRoots = source.files,
             javaPackagePrefix = javaPackagePrefix,
             args = args,

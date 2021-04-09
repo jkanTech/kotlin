@@ -161,8 +161,9 @@ public class ModuleXmlParser {
                 moduleBuilder.addSourceFiles(path);
             }
             else if (COMMON_SOURCES.equalsIgnoreCase(qName)) {
-                String path = getAttribute(attributes, PATH, qName);
-                moduleBuilder.addCommonSourceFiles(path);
+                /*
+                 * -Xcommon-sources and -Xcommon-source-sets are MPP projects which are not supported in JPS
+                 */
             }
             else if (FRIEND_DIR.equalsIgnoreCase(qName)) {
                 String path = getAttribute(attributes, PATH, qName);

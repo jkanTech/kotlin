@@ -27,7 +27,7 @@ interface Module {
 
     fun getSourceFiles(): List<String>
 
-    fun getCommonSourceFiles(): List<String>
+    fun getCommonSourceFilesToSourceSetName(): Map<String, String>
 
     fun getClasspathRoots(): List<String>
 

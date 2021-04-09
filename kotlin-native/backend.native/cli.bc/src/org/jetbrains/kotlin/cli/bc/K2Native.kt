@@ -107,9 +107,9 @@ class K2Native : CLICompiler<K2NativeCompilerArguments>() {
             arguments    : K2NativeCompilerArguments,
             services     : Services) {
 
-        val commonSources = arguments.commonSources?.toSet().orEmpty()
+        val sourceToSourceSet = createSourceSetMappingFromArg(arguments.commonSourceSets)
         arguments.freeArgs.forEach {
-            configuration.addKotlinSourceRoot(it, it in commonSources)
+            configuration.addKotlinSourceRoot(it, sourceToSourceSet[it])
         }
 
         with(KonanConfigKeys) {

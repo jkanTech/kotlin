@@ -122,10 +122,9 @@ class K2JsIrCompiler : CLICompiler<K2JSCompilerArguments>() {
         configuration.put(JSConfigurationKeys.TRANSITIVE_LIBRARIES, libraries)
         configuration.put(JSConfigurationKeys.REPOSITORIES, repositories)
 
-        val commonSourcesArray = arguments.commonSources
-        val commonSources = commonSourcesArray?.toSet() ?: emptySet()
+        val sourceToSourceSet = createSourceSetMappingFromArg(arguments.commonSourceSets)
         for (arg in arguments.freeArgs) {
-            configuration.addKotlinSourceRoot(arg, commonSources.contains(arg))
+            configuration.addKotlinSourceRoot(arg, sourceToSourceSet[arg])
         }
 
         val environmentForJS =

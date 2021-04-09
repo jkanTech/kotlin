@@ -201,12 +201,12 @@ abstract class CommonCompilerArguments : CommonToolArguments() {
     var metadataVersion: String? by FreezableVar(null)
 
     @Argument(
-        value = "-Xcommon-sources",
-        valueDescription = "<path>",
-        description = "Sources of the common module that need to be compiled together with this module in the multi-platform mode.\n" +
+        value = "-Xcommon-source-sets",
+        valueDescription = "[&&sourceSetName <path>]",
+        description = "Sources of the common modules with names of owner modules that need to be compiled together with this module in the multi-platform mode.\n" +
                 "Should be a subset of sources passed as free arguments"
     )
-    var commonSources: Array<String>? by FreezableVar(null)
+    var commonSourceSets: Array<String>? by FreezableVar(null)
 
     @Argument(
         value = "-Xallow-result-return-type",

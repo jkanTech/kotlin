@@ -282,7 +282,7 @@ class KotlinCoreEnvironment private constructor(
     }
 
     fun addKotlinSourceRoots(rootDirs: List<File>) {
-        val roots = rootDirs.map { KotlinSourceRoot(it.absolutePath, isCommon = false) }
+        val roots = rootDirs.map { KotlinSourceRoot(it.absolutePath, sourceSetName = null) }
         sourceFiles += createSourceFilesFromSourceRoots(configuration, project, roots).toSet() - sourceFiles
     }
 

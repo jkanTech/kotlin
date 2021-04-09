@@ -11,13 +11,13 @@ import org.jetbrains.kotlin.config.CompilerConfiguration
 interface ContentRoot
 
 /**
- * @param isCommon whether this source root contains sources of a common module in a multi-platform project
+ * @param sourceSetName shows name of common source set if this root belongs to common module of MPP project
  */
-data class KotlinSourceRoot(val path: String, val isCommon: Boolean): ContentRoot
+data class KotlinSourceRoot(val path: String, val sourceSetName: String?): ContentRoot
 
 @JvmOverloads
-fun CompilerConfiguration.addKotlinSourceRoot(path: String, isCommon: Boolean = false) {
-    add(CLIConfigurationKeys.CONTENT_ROOTS, KotlinSourceRoot(path, isCommon))
+fun CompilerConfiguration.addKotlinSourceRoot(path: String, sourceSetName: String? = null) {
+    add(CLIConfigurationKeys.CONTENT_ROOTS, KotlinSourceRoot(path, sourceSetName))
 }
 
 fun CompilerConfiguration.addKotlinSourceRoots(sources: List<String>): Unit =

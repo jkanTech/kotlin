@@ -9,6 +9,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.FileCollection
+import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.logging.Logger
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Provider
@@ -295,9 +296,9 @@ abstract class AbstractKotlinCompile<T : CommonCompilerArguments>() : AbstractKo
     internal val sourceSetName: String
         get() = taskData.compilation.name
 
-    @get:InputFiles
+    @get:Input
     @get:PathSensitive(PathSensitivity.RELATIVE)
-    internal var commonSourceSet: FileCollection = project.files() //TODO
+    internal val commonSourceSets: MutableMap<String, MutableList<String>> = mutableMapOf()
 
     @get:Input
     internal val moduleName: String by project.provider {
@@ -556,7 +557,8 @@ open class KotlinCompile : AbstractKotlinCompile<K2JVMCompilerArguments>(), Kotl
         )
         compilerRunner.runJvmCompilerAsync(
             sourceRoots.kotlinSourceFiles,
-            commonSourceSet.toList(),
+//            commonSourceSet.toList(),
+            commonSourceSets,
             sourceRoots.javaSourceRoots,
             javaPackagePrefix,
             args,
@@ -811,6 +813,11 @@ open class Kotlin2JsCompile @Inject constructor(
             reportingSettings = reportingSettings,
             incrementalCompilationEnvironment = icEnv
         )
-        compilerRunner.runJsCompilerAsync(sourceRoots.kotlinSourceFiles, commonSourceSet.toList(), args, environment)
+        compilerRunner.runJsCompilerAsync(
+            sourceRoots.kotlinSourceFiles,
+            commonSourceSets,
+            args,
+            environment
+        )
     }
 }

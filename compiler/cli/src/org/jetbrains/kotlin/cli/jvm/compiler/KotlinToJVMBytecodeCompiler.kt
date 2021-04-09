@@ -251,10 +251,13 @@ object KotlinToJVMBytecodeCompiler {
 
     internal fun configureSourceRoots(configuration: CompilerConfiguration, chunk: List<Module>, buildFile: File? = null) {
         for (module in chunk) {
-            val commonSources = getBuildFilePaths(buildFile, module.getCommonSourceFiles()).toSet()
+            val commonSources = module.getCommonSourceFilesToSourceSetName().mapKeys { (source, _) ->
+                getBuildFilePath(buildFile, source)
+            }
 
             for (path in getBuildFilePaths(buildFile, module.getSourceFiles())) {
-                configuration.addKotlinSourceRoot(path, isCommon = path in commonSources)
+                val commonSourceSetName = commonSources[path]
+                configuration.addKotlinSourceRoot(path, commonSourceSetName)
             }
         }
 
@@ -442,6 +445,10 @@ object KotlinToJVMBytecodeCompiler {
         else sourceFilePaths.map { path ->
             (File(path).takeIf(File::isAbsolute) ?: buildFile.resolveSibling(path)).absolutePath
         }
+
+    private fun getBuildFilePath(buildFile: File?, sourceFilePath: String): String =
+        if (buildFile == null) sourceFilePath
+        else (File(sourceFilePath).takeIf(File::isAbsolute) ?: buildFile.resolveSibling(sourceFilePath)).absolutePath
 
     fun compileBunchOfSources(environment: KotlinCoreEnvironment): Boolean {
         val moduleVisibilityManager = ModuleVisibilityManager.SERVICE.getInstance(environment.project)

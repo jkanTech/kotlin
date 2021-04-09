@@ -13,6 +13,7 @@ import org.gradle.api.artifacts.*
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.FileTree
+import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.logging.Logger
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
@@ -380,17 +381,9 @@ open class KotlinNativeCompile : AbstractKotlinNativeCompile<KotlinCommonOptions
     // Inputs and outputs.
     // region Sources.
 
-    @get:Internal // these sources are normally a subset of `source` ones which are already tracked
-    val commonSources: ConfigurableFileCollection = project.files()
-
-//    private val commonSources: FileCollection by lazy {
-//        // Already taken into account in getSources method.
-//        project.files(compilation.map { it.commonSources }).asFileTree
-//    }
-
-    private val commonSourcesTree: FileTree
-        get() = commonSources.asFileTree
-
+    @get:Input
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    internal val commonSourceSets: MutableMap<String, MutableList<String>> = mutableMapOf()
 
     private val friendModule: FileCollection by compilation.map { compilationInstance ->
         project.files(
@@ -463,8 +456,8 @@ open class KotlinNativeCompile : AbstractKotlinNativeCompile<KotlinCommonOptions
 
     override fun buildSourceArgs(): List<String> = mutableListOf<String>().apply {
         addAll(getSource().map { it.absolutePath })
-        if (!commonSourcesTree.isEmpty) {
-            add("-Xcommon-sources=${commonSourcesTree.map { it.absolutePath }.joinToString(separator = ",")}")
+        if (commonSourceSets.isNotEmpty()) {
+            add("-Xcommon-source-sets=${GradleCompilerRunner.toCommonSourceSetsArg(commonSourceSets)}")
         }
     }
     // endregion.

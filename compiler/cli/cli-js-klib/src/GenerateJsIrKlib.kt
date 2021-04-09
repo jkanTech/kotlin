@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.ir.declarations.persistent.PersistentIrFactory
 import org.jetbrains.kotlin.js.config.JSConfigurationKeys
 import org.jetbrains.kotlin.library.resolver.KotlinLibraryResolveResult
 import org.jetbrains.kotlin.psi.KtFile
-import org.jetbrains.kotlin.resolve.multiplatform.isCommonSource
+import org.jetbrains.kotlin.resolve.multiplatform.commonSourceSetName
 import org.jetbrains.kotlin.serialization.js.ModuleKind
 import org.jetbrains.kotlin.util.Logger
 import java.io.File
@@ -80,7 +80,7 @@ fun buildKLib(
         files = sources.map { source ->
             val file = createPsiFile(source)
             if (source in commonSources) {
-                file.isCommonSource = true
+                file.commonSourceSetName = "common"
             }
             file
         },

@@ -9,8 +9,10 @@ import com.intellij.openapi.util.Key
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi.UserDataProperty
 
+var KtFile.commonSourceSetName: String? by UserDataProperty(Key.create("COMMON_SOURCE_SET_NAME"))
 /**
  * Returns true if this file is a part of the common module in a multi-platform project.
  * This setting only makes sense in the compiler, not in the IDE where sources from common modules are analyzed as common
  */
-var KtFile.isCommonSource: Boolean? by UserDataProperty(Key.create("IS_COMMON_SOURCE"))
+val KtFile.isCommonSource: Boolean
+    get() = commonSourceSetName != null

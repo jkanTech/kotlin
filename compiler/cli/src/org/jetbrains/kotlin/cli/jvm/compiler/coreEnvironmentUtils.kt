@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.config.JVMConfigurationKeys
 import org.jetbrains.kotlin.extensions.PreprocessedFileCreator
 import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.psi.KtFile
-import org.jetbrains.kotlin.resolve.multiplatform.isCommonSource
+import org.jetbrains.kotlin.resolve.multiplatform.commonSourceSetName
 import java.io.File
 
 fun CompilerConfiguration.report(severity: CompilerMessageSeverity, message: String, location: CompilerMessageLocation? = null) {
@@ -42,7 +42,7 @@ fun createSourceFilesFromSourceRoots(
 
     val virtualFileCreator = PreprocessedFileCreator(project)
 
-    for ((sourceRootPath, isCommon) in sourceRoots) {
+    for ((sourceRootPath, commonSourceSet) in sourceRoots) {
         val vFile = localFileSystem.findFileByPath(sourceRootPath)
         if (vFile == null) {
             val message = "Source file or directory not found: $sourceRootPath"
@@ -70,8 +70,8 @@ fun createSourceFilesFromSourceRoots(
                 val psiFile = psiManager.findFile(virtualFile)
                 if (psiFile is KtFile) {
                     result.add(psiFile)
-                    if (isCommon) {
-                        psiFile.isCommonSource = true
+                    if (commonSourceSet != null) {
+                        psiFile.commonSourceSetName = commonSourceSet
                     }
                 }
             }

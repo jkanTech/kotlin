@@ -26,7 +26,7 @@ class ModuleBuilder(
     private val type: String
 ) : Module {
     private val sourceFiles = ArrayList<String>()
-    private val commonSourceFiles = ArrayList<String>()
+    private val commonSourceFilesToSourceSetName = mutableMapOf<String, String>()
     private val classpathRoots = ArrayList<String>()
     private val javaSourceRoots = ArrayList<JavaRootPath>()
     private val friendDirs = ArrayList<String>()
@@ -36,8 +36,8 @@ class ModuleBuilder(
         sourceFiles.add(path)
     }
 
-    fun addCommonSourceFiles(path: String) {
-        commonSourceFiles.add(path)
+    fun addCommonSourceFilesWithName(name: String, path: String) {
+        commonSourceFilesToSourceSetName[path] = name
     }
 
     fun addClasspathEntry(path: String) {
@@ -56,7 +56,7 @@ class ModuleBuilder(
     override fun getFriendPaths(): List<String> = friendDirs
     override fun getJavaSourceRoots(): List<JavaRootPath> = javaSourceRoots
     override fun getSourceFiles(): List<String> = sourceFiles
-    override fun getCommonSourceFiles(): List<String> = commonSourceFiles
+    override fun getCommonSourceFilesToSourceSetName(): Map<String, String> = commonSourceFilesToSourceSetName
     override fun getClasspathRoots(): List<String> = classpathRoots
     override fun getModuleName(): String = name
     override fun getModuleType(): String = type

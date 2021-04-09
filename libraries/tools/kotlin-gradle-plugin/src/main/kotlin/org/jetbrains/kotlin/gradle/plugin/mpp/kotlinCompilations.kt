@@ -105,9 +105,9 @@ abstract class AbstractKotlinCompilation<T : KotlinCommonOptions>(
         fun AbstractKotlinCompile<*>.configureAction() {
             source(sourceSet.kotlin)
             sourceFilesExtensions(sourceSet.customSourceFilesExtensions)
-            commonSourceSet += project.files(Callable {
-                if (addAsCommonSources.value) sourceSet.kotlin else emptyList<Any>()
-            })
+            if (addAsCommonSources.value) {
+                sourceSet.kotlin.files.mapTo(commonSourceSets.getOrPut(sourceSet.name, ::mutableListOf)) { it.path }
+            }
         }
 
         target.project.tasks

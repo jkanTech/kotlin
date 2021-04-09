@@ -88,3 +88,17 @@ fun MessageCollector.toLogger(): Logger =
             report(CompilerMessageSeverity.LOGGING, message)
         }
     }
+
+fun createSourceSetMappingFromArg(args: Array<String>?): Map<String, String> {
+    if (args.isNullOrEmpty()) return emptyMap()
+    val result = mutableMapOf<String, String>()
+    var name = ""
+    for (arg in args) {
+        if (arg.startsWith("&&")) {
+            name = arg.removePrefix("&&")
+            continue
+        }
+        result[arg] = name
+    }
+    return result
+}

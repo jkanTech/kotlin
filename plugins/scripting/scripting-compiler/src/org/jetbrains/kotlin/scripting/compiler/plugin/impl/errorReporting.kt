@@ -146,7 +146,7 @@ internal fun reportArgumentsIgnoredGenerally(
         K2JVMCompilerArguments::version,
         K2JVMCompilerArguments::destination,
         K2JVMCompilerArguments::buildFile,
-        K2JVMCompilerArguments::commonSources,
+        K2JVMCompilerArguments::commonSourceSets,
         K2JVMCompilerArguments::allWarningsAsErrors,
         K2JVMCompilerArguments::script,
         K2JVMCompilerArguments::expression,

@@ -96,7 +96,7 @@ abstract class AbstractModularizedTest : KtUsefulTestCase() {
 
         configuration.addAll(
             CLIConfigurationKeys.CONTENT_ROOTS,
-            moduleData.sources.filter { it.extension == "kt" || it.isDirectory }.map { KotlinSourceRoot(it.absolutePath, false) })
+            moduleData.sources.filter { it.extension == "kt" || it.isDirectory }.map { KotlinSourceRoot(it.absolutePath, null) })
         return configuration
     }
 

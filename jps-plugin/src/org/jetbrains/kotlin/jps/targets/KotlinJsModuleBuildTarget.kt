@@ -107,7 +107,6 @@ class KotlinJsModuleBuildTarget(kotlinContext: KotlinCompileContext, jpsModuleBu
             module.kotlinCompilerSettings,
             environment,
             sources.allFiles,
-            sources.crossCompiledFiles,
             sourceMapRoots,
             libraries,
             friendBuildTargetsMetaFiles,
