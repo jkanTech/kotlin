@@ -30,6 +30,12 @@ public class IrTextTestGenerated extends AbstractIrTextTest {
     @TestDataPath("$PROJECT_ROOT")
     public class Classes {
         @Test
+        @TestMetadata("aaaa.kt")
+        public void testAaaa() throws Exception {
+            runTest("compiler/testData/ir/irText/classes/aaaa.kt");
+        }
+
+        @Test
         @TestMetadata("abstractMembers.kt")
         public void testAbstractMembers() throws Exception {
             runTest("compiler/testData/ir/irText/classes/abstractMembers.kt");
